@@ -1,0 +1,344 @@
+{
+  "name": "Quick Capture",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "458c080c-c6a7-4b2e-8a5b-a5a65be6662d",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://dashboard-captureinsight.netlify.app"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-768, 96],
+      "id": "fbcec172-78c1-42e9-9351-76dd8fd2d0bc",
+      "name": "Webhook",
+      "webhookId": "458c080c-c6a7-4b2e-8a5b-a5a65be6662d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{$json.body.texto}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "id": "839d5e60-0723-4b3e-bafd-5d1044c128ae"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "feae76f4-3112-4de9-9790-cf217a6a71fc",
+      "name": "Validar Payload",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-496, 208]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"error\": \"Campo 'texto' é obrigatório.\" } }}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "0c931483-3179-4d60-87ad-31610aac72c5",
+      "name": "Respond Texto Vazio",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [-416, 416]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.body.categoria}}",
+                    "rightValue": "Desenvolvimento",
+                    "operator": { "type": "string", "operation": "equals" },
+                    "id": "a478f99d-9717-4dbf-b482-fe76f99a0292"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Desenvolvimento"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "id": "0d5cc882-74ac-498c-bb84-fa3c356f48be",
+                    "leftValue": "={{$json.body.categoria}}",
+                    "rightValue": "Automação",
+                    "operator": { "type": "string", "operation": "equals", "name": "filter.operator.equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Automação"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "id": "9532f660-f57b-44ac-a579-91c66bd9d821",
+                    "leftValue": "={{$json.body.categoria}}",
+                    "rightValue": "Empreendedorismo",
+                    "operator": { "type": "string", "operation": "equals", "name": "filter.operator.equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Empreendedorismo"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 3 },
+                "conditions": [
+                  {
+                    "id": "f01b49be-6918-4458-b9f6-ddd352339fe7",
+                    "leftValue": "={{$json.body.categoria}}",
+                    "rightValue": "Pessoal",
+                    "operator": { "type": "string", "operation": "equals", "name": "filter.operator.equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pessoal"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Categoria Inválida"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [-384, -80],
+      "id": "97473773-fc37-4807-b5ad-721080386063",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"error\": \"Categoria inválida ou não reconhecida.\" } }}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "306f599c-e266-48b0-9cec-5f75ced63f93",
+      "name": "Respond Categoria Inválida",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [-240, 320]
+    },
+    {
+      "id": "332da713-6341-465e-83a4-5c34641650e4",
+      "name": "Tem Agendamento",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-96, -96],
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{$json.body.dataAgendamento}}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty", "singleValue": true }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8585722845",
+        "text": "=Nova Ideia: {{$json.body.texto}}\nCategoria: {{$json.body.categoria}}",
+        "additionalFields": { "appendAttribution": false }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [0, -48],
+      "id": "5dcd23b2-c0d7-483e-9335-ba6a87c90519",
+      "name": "Send a text message",
+      "webhookId": "22be395f-84a7-4081-b7fa-43936a47fcaa",
+      "credentials": {
+        "telegramApi": {
+          "id": "X28v7mNrwmwquOFl",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 1 },
+          "conditions": [
+            {
+              "leftValue": "={{$json.body.dataAgendamento}}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty", "singleValue": true }
+            },
+            {
+              "leftValue": "={{$json.body.dataTermino}}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty", "singleValue": true }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "54512cfd-0180-4430-82a3-318e8f6c8ecc",
+      "name": "Validar Data Pessoal",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [-96, 176]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": false, \"error\": \"Se dataAgendamento for informada, dataTermino também é obrigatória (e vice-versa).\" } }}",
+        "options": { "responseCode": 400 }
+      },
+      "id": "f074b1c1-cec3-4469-9275-38437002097c",
+      "name": "Respond Data Obrigatoria",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [0, 384]
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gabrielholandam31@gmail.com",
+          "mode": "list",
+          "cachedResultName": "gabrielholandam31@gmail.com"
+        },
+        "start": "={{ DateTime.fromISO($json.body.dataAgendamento, { zone: 'America/Sao_Paulo' }).toISO() }}",
+        "end": "={{ DateTime.fromISO($json.body.dataTermino, { zone: 'America/Sao_Paulo' }).toISO() }}",
+        "useDefaultReminders": false,
+        "additionalFields": { "summary": "={{$json.body.texto}}" }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [48, 176],
+      "id": "f17d5611-5a7f-4f72-a419-526ce295e3da",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "8585722845",
+        "text": "=✅ Agendamento Confirmado!\n📅 Tarefa: {{$json.summary}}\n🏷️ Categoria: {{$('Webhook').item.json.body.categoria}}\n⏰ Início: {{ DateTime.fromISO($json.start.dateTime).setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm') }}\n⏳ Término: {{ DateTime.fromISO($json.end.dateTime).setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm') }}",
+        "additionalFields": { "appendAttribution": false }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [256, 176],
+      "id": "f6ca51af-bd6a-4c42-aeef-8abecfcc3f31",
+      "name": "Send a text message1",
+      "webhookId": "f9accf53-e930-4b97-b438-b46e5383547d",
+      "credentials": {
+        "telegramApi": {
+          "id": "X28v7mNrwmwquOFl",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true } }}",
+        "options": {}
+      },
+      "id": "80514742-345d-477d-8f7c-b6d5fa225434",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [464, 96]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Validar Payload", "type": "main", "index": 0 }]]
+    },
+    "Validar Payload": {
+      "main": [
+        [{ "node": "Switch", "type": "main", "index": 0 }],
+        [{ "node": "Respond Texto Vazio", "type": "main", "index": 0 }]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [{ "node": "Tem Agendamento", "type": "main", "index": 0 }],
+        [{ "node": "Tem Agendamento", "type": "main", "index": 0 }],
+        [{ "node": "Tem Agendamento", "type": "main", "index": 0 }],
+        [{ "node": "Tem Agendamento", "type": "main", "index": 0 }],
+        [{ "node": "Respond Categoria Inválida", "type": "main", "index": 0 }]
+      ]
+    },
+    "Tem Agendamento": {
+      "main": [
+        [{ "node": "Validar Data Pessoal", "type": "main", "index": 0 }],
+        [{ "node": "Send a text message", "type": "main", "index": 0 }]
+      ]
+    },
+    "Validar Data Pessoal": {
+      "main": [
+        [{ "node": "Create an event", "type": "main", "index": 0 }],
+        [{ "node": "Respond Data Obrigatoria", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create an event": {
+      "main": [[{ "node": "Send a text message1", "type": "main", "index": 0 }]]
+    },
+    "Send a text message": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    },
+    "Send a text message1": {
+      "main": [[{ "node": "Respond OK", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "meta": {
+    "instanceId": "0c91e6d96c7e56fdd03c536f4067e6cae644867f6458ed51e6f1d21259268c3a"
+  },
+  "nodeGroups": [],
+  "id": "0xOrQLYn86b8lnXg",
+  "tags": []
+}
