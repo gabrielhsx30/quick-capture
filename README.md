@@ -79,6 +79,15 @@ quick-capture/
 - Rate limiting no proxy reverso (Traefik) especificamente no endpoint do webhook, para conter abuso de volume.
 - Timezone tratado via parsing real (Luxon) em vez de concatenação de string, evitando datas inválidas.
 
+## Uso pessoal — leia antes de clonar
+
+Este é um projeto **single-tenant**: existe um único destinatário fixo (eu), configurado no backend n8n. Isso tem duas implicações importantes:
+
+- **O link publicado (Netlify) não é multiusuário.** Qualquer pessoa que preencher o formulário no meu dashboard está enviando dados para o meu Telegram e o meu Google Calendar — não existe roteamento por visitante.
+- **Clonar o repositório não gera uma cópia isolada automaticamente.** O `frontend/script.js` aponta para a URL de produção do meu webhook n8n. Para ter sua própria instância funcional e privada, você precisa: subir sua própria instância n8n, importar `n8n/quick-capture-workflow.json`, criar suas próprias credenciais do Telegram Bot API e do Google Calendar OAuth2, preencher os campos `REPLACE_WITH_YOUR_*` no workflow com seus próprios IDs, e trocar a URL do webhook em `script.js` para apontar para a sua instância.
+
+O JSON do workflow neste repositório já está sem dados pessoais (chatId, e-mail e IDs de credencial foram substituídos por placeholders).
+
 ## Ferramentas utilizadas no desenvolvimento
 
 Esse projeto foi construído com apoio de três ferramentas de IA, cada uma numa frente diferente:
@@ -159,6 +168,15 @@ quick-capture/
 - Structured synchronous response (`{"success": boolean, "error"?: string}`), instead of relying on a "respond before processing" mode.
 - Rate limiting at the reverse proxy (Traefik), scoped specifically to the webhook endpoint, to contain volume abuse.
 - Timezone handled through real parsing (Luxon) instead of string concatenation, avoiding invalid dates.
+
+## Personal use — read before cloning
+
+This is a **single-tenant** project: there is one fixed recipient (me), configured in the n8n backend. This has two important implications:
+
+- **The published link (Netlify) is not multi-user.** Anyone who submits the form on my dashboard is sending data to my Telegram and my Google Calendar — there's no per-visitor routing.
+- **Cloning the repository does not automatically give you an isolated copy.** `frontend/script.js` points to my production n8n webhook URL. To get your own private, functional instance, you need to: deploy your own n8n instance, import `n8n/quick-capture-workflow.json`, create your own Telegram Bot API and Google Calendar OAuth2 credentials, fill in the `REPLACE_WITH_YOUR_*` fields in the workflow with your own IDs, and point the webhook URL in `script.js` to your own instance.
+
+The workflow JSON in this repository has already been stripped of personal data (chat ID, email, and credential IDs were replaced with placeholders).
 
 ## Tools used in development
 
