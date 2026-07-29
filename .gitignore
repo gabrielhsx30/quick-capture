@@ -1,0 +1,11 @@
+# SO
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Variaveis de ambiente / segredos (caso adicione futuramente)
+.env
+.env.local
